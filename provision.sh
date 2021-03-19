@@ -46,8 +46,10 @@ if [[ $APACHEINSTALL == S* ]]
         echo "apache is installed"
     else
         echo "installing apache"
-        apt-get -y install apache2 libapache2-mod-wsgi-py3
+        apt-get -y install apache2
 fi
+# install mod_wsgi
+apt-get -y install libapache2-mod-wsgi-py3
 echo "making sure apache is started and configured to run at boot"
 systemctl start apache2
 systemctl enable apache2
