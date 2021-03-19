@@ -1,0 +1,10 @@
+[sshd]
+enabled = true
+filter = sshd
+action = discord_notifications[bantime=24, discord_userid=]
+         iptables[name=SSH, port=ssh, protocol=tcp]
+logpath = /var/log/auth.log
+findtime = 600
+maxretry = 3
+bantime = 86400
+backend = polling
