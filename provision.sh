@@ -37,6 +37,18 @@ fi
 echo "configuring pip3 as default"
 update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
 update-alternatives --set pip /usr/bin/pip3
+echo "installing discord.py"
+pip install discord.py
+
+# make sure discord.sh is installed for webhooks.
+if [ -f /usr/bin/discordnotification ];
+    then
+        echo "discord.sh is installed"
+    else
+        echo "Installing discord.sh from https://github.com/ChaoticWeg"
+        wget https://raw.githubusercontent.com/ChaoticWeg/discord.sh/master/discord.sh -O /usr/bin/discordnotification
+        chmod u+x /usr/bin/discordnotification
+fi
 
 
 # configure apache and virtualhost helper script
@@ -145,17 +157,6 @@ else
     echo "success, virtual host created."
     ln -s $AVAILABLECONF $ENABLEDCONF
     systemctl restart apache2
-fi
-
-
-# check if discord.sh is installed for webhooks, if not, install it first
-if [ -f /usr/bin/discordnotification ];
-    then
-        echo "discord.sh is installed"
-    else
-        echo "Installing discord.sh from https://github.com/ChaoticWeg"
-        wget https://raw.githubusercontent.com/ChaoticWeg/discord.sh/master/discord.sh -O /usr/bin/discordnotification
-        chmod u+x /usr/bin/discordnotification
 fi
 
 
