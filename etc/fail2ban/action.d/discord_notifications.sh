@@ -1,0 +1,30 @@
+[Definition]
+
+actionstart = curl -X POST "<webhook>" \
+            -H "Content-Type: application/json" \
+            -d '{"username": "Warden", "content":"The **[<name>]** jail has started"}'
+
+actionstop = curl -X POST "<webhook>" \
+            -H "Content-Type: application/json" \
+            -d '{"username": "Warden", "content":"The **[<name>]** jail has been stopped"}'
+
+
+actioncheck =
+
+actionban = curl -X POST "<webhook>" \
+            -H "Content-Type: application/json" \
+            -d '{"username":"Warden", "content":"<discord_userid> **[<name>]** IP: `<ip>` has been banned. Here is some info about the IP: https://db-ip.com/<ip>"}'
+            curl -X POST "<webhook>" \
+            -H "Content-Type: application/json" \
+            -d '{"username":"Warden", "content":"If you want to unban the IP run: `!unban <name> <ip>`"}'
+
+actionunban = curl -X POST "<webhook>" \
+            -H "Content-Type: application/json" \
+            -d '{"username":"Warden", "content":"**[<name>]** IP: [<ip>](https://db-ip.com/<ip>) has been unbanned"}'
+[Init]
+
+# Name of jail in jail.local
+name = sshd
+
+# Discord Webhook URL
+webhook = $JAIL_WEBHOOK
