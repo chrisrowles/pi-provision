@@ -7,6 +7,9 @@
 }
 
 
+WD=$(pwd)
+
+
 echo "making sure system is up-to-date"
 apt-get -y update
 apt-get -y upgrade
@@ -113,7 +116,6 @@ if [ ! -d /var/www/flaskapps ];
         fi
 fi
 git clone https://github.com/chrisrowles/pi-monitor-api.git /var/www/flaskapps/pi-monitor-api
-WD=$(pwd)
 cd /var/www/pi-monitor-api
 # TODO create a virtualenv instead
 pip install -r requirements.txt
@@ -160,7 +162,11 @@ fi
 
 
 # Copy backup scripts (assumes hdd is connected and mounted in correct location)
-echo "Configuring backup schedule"
+echo "Configuring backups"
+if [ ! -d /etc/backup ]; then
+    mkdir /etc/backup
+fi
+cp $(pwd)/cron/backup-incremental-exclusions.txt /etc/backup/
 cp $(pwd)/cron/backup-incremental.sh /etc/cron.daily/
 cp $(pwd)/cron/backup-image.sh /etc/cron.monthly/
 
@@ -177,6 +183,20 @@ if [[ $SUPERVISORINSTALL == S* ]]
         # Configure to run as user pi
         chown -R pi:pi /var/log/supervisor
         cp $(pwd)/etc/supervisord/supervisord.conf /etc/supervisor/supervisord.conf
+fi
+
+# Configure monitord
+if [ -d /home/pi/monitord ];
+    then
+        echo "monitord is installed, leaving it alone."
+    else
+        # TODO create virtualenv
+        pip install tabulate
+        pip install python-dotenv
+        sudo -u pi git clone https://github.com/chrisrowles/pi-monitord.git /home/pi/pi-monitord
+        ln -s /home/pi/pi-monitord/supervisor/bot.supervisor /etc/supervisor/conf.d/
+        sudo -u pi supervisord
+        sudo -u pi supervisorctl status
 fi
 
 echo "Provisioning complete. Don't forget to add discord environment variables to /home/pi/.env"
