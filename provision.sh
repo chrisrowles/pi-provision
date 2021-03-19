@@ -69,6 +69,28 @@ usermod -aG pi:www-data
 chown -R pi:www-data /var/www
 
 
+# make sure fail2ban is installed
+JAILINSTALL=`dpkg -s fail2ban | grep Status`;
+if [[ $JAILINSTALL == S* ]]
+    then
+        echo "fail2ban is installed."
+    else
+        echo "fail2ban is not installed."
+        echo "Installing fail2ban. Please wait..."
+        apt-get -y install fail2ban
+
+        echo "setting up discord webhook"
+        cp $(pwd)/etc/fail2ban/action.d/discord_notifications.conf /etc/fail2ban/action.d/discord_notifications.conf
+
+        echo "copying jail configuration"
+        cp $(pwd)/etc/fail2ban/jail.local /etc/fail2ban/jail.local
+fi
+# make sure fail2ban is started and enabled at boot
+echo "starting fail2ban and enabling at system boot"
+systemctl start fail2ban
+systemctl enable fail2ban
+
+
 # make sure git is installed
 GITINSTALL=`dpkg -s git | grep Status`;
 if [[ $GITINSTALL == S* ]]
@@ -125,11 +147,38 @@ else
     systemctl restart apache2
 fi
 
-# notify of completion and perform final checks
-echo "provisioning process completed, performing final checks."
-if [ ! -d /home/pi/pi-monitord ]; then
-    echo "please note, monitor bot and utilities may not be installed."
-    echo "more info: https://github.com/chrisrowles/pi-monitor-bot"
+
+# check if discord.sh is installed for webhooks, if not, install it first
+if [ -f /usr/bin/discordnotification ];
+    then
+        echo "discord.sh is installed"
+    else
+        echo "Installing discord.sh from https://github.com/ChaoticWeg"
+        wget https://raw.githubusercontent.com/ChaoticWeg/discord.sh/master/discord.sh -O /usr/bin/discordnotification
+        chmod u+x /usr/bin/discordnotification
 fi
+
+
+# Copy backup scripts (assumes hdd is connected and mounted in correct location)
+echo "Configuring backup schedule"
+cp $(pwd)/cron/backup-incremental.sh /etc/cron.daily/
+cp $(pwd)/cron/backup-image.sh /etc/cron.monthly/
+
+
+# Make sure supervisor is installed
+SUPERVISORINSTALL=`dpkg -s supervisor | grep Status`;
+if [[ $SUPERVISORINSTALL == S* ]]
+    then
+        echo "supervisor is installed."
+    else
+        echo "supervisor is not installed."
+        echo "Installing supervisor. Please wait..."
+        apt-get -y install supervisor
+        # Configure to run as user pi
+        chown -R pi:pi /var/log/supervisor
+        cp $(pwd)/etc/supervisord/supervisord.conf /etc/supervisor/supervisord.conf
+fi
+
+echo "Provisioning complete. Don't forget to add discord environment variables to /home/pi/.env"
 
 exit 0
