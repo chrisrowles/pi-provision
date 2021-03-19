@@ -128,7 +128,7 @@ if [ ! -d /var/www/flaskapps ];
         fi
 fi
 git clone https://github.com/chrisrowles/pi-monitor-api.git /var/www/flaskapps/pi-monitor-api
-cd /var/www/pi-monitor-api
+cd /var/www/flaskapps/pi-monitor-api
 # TODO create a virtualenv instead
 pip install -r requirements.txt
 cd $WD
