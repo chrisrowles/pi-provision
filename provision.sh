@@ -206,7 +206,7 @@ if [ -d /home/pi/monitord ];
     then
         echo "monitord is installed, leaving it alone."
     else
-        echo "insalling monitord."
+        echo "installing monitord."
         if [ ! -d /home/pi/logs ]; then
             sudo -u pi mkdir /home/pi/logs
         fi
