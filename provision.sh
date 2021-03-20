@@ -16,19 +16,21 @@ apt-get -y upgrade
 
 
 # configure python3 (assumes it is installed... usually is on later versions of raspbian OS)
+echo "checking for python 3"
 PYTHONDEFAULT=`python -V | awk -F ' ' '{print $2}' | awk -F '.' '{print $1}'`;
 if [[ $PYTHONDEFAULT == "3" ]]
     then
         echo "python 3 is set as default"
     else
         # TODO check update-alternatives --list first
-        echo "configuring python3 as default"
+        echo "configuring python 3 as default"
         update-alternatives --install  /usr/bin/python python /usr/bin/python3 1
         update-alternatives --set python /usr/bin/python3
 fi
 
 
 # configure pip3
+echo "checking for pip3"
 PIPINSTALL=`dpkg -s python3-pip | grep Status`;
 if [[ $PIPINSTALL == S* ]]
     then
@@ -44,6 +46,7 @@ echo "installing discord.py"
 pip install discord.py
 
 # make sure discord.sh is installed for webhooks.
+echo "checking for discord.sh"
 if [ -f /usr/bin/discordnotification ];
     then
         echo "discord.sh is installed"
@@ -55,6 +58,7 @@ fi
 
 
 # configure apache and virtualhost helper script
+echo "checking for apache"
 APACHEINSTALL=`dpkg -s apache2 | grep Status`;
 if [[ $APACHEINSTALL == S* ]]
     then
@@ -85,6 +89,7 @@ chown -R pi:www-data /var/www
 
 
 # make sure fail2ban is installed
+echo "checking for fail2ban"
 JAILINSTALL=`dpkg -s fail2ban | grep Status`;
 if [[ $JAILINSTALL == S* ]]
     then
@@ -107,6 +112,7 @@ systemctl enable fail2ban
 
 
 # make sure git is installed
+echo "checking for git"
 GITINSTALL=`dpkg -s git | grep Status`;
 if [[ $GITINSTALL == S* ]]
     then
@@ -130,6 +136,7 @@ fi
 git clone https://github.com/chrisrowles/pi-monitor-api.git /var/www/flaskapps/pi-monitor-api
 cd /var/www/flaskapps/pi-monitor-api
 # TODO create a virtualenv instead
+pip install testresources
 pip install -r requirements.txt
 cd $WD
 echo "configuring virtual host"
@@ -165,14 +172,17 @@ fi
 # Copy backup scripts (assumes hdd is connected and mounted in correct location)
 echo "Configuring backups"
 if [ ! -d /etc/backup ]; then
+    echo "creating backup config directory"
     mkdir /etc/backup
 fi
+echo "copying backup cron jobs"
 cp $(pwd)/cron/backup-incremental-exclusions.txt /etc/backup/
 cp $(pwd)/cron/backup-incremental.sh /etc/cron.daily/
 cp $(pwd)/cron/backup-image.sh /etc/cron.monthly/
 
 
 # Make sure supervisor is installed
+echo "checking for supervisor"
 SUPERVISORINSTALL=`dpkg -s supervisor | grep Status`;
 if [[ $SUPERVISORINSTALL == S* ]]
     then
@@ -181,16 +191,21 @@ if [[ $SUPERVISORINSTALL == S* ]]
         echo "supervisor is not installed."
         echo "Installing supervisor. Please wait..."
         apt-get -y install supervisor
-        # Configure to run as user pi
-        chown -R pi:pi /var/log/supervisor
-        cp $(pwd)/etc/supervisord/supervisord.conf /etc/supervisor/supervisord.conf
 fi
+# Configure to run as user pi
+chown -R pi:pi /var/log/supervisor
+cp $(pwd)/etc/supervisord/supervisord.conf /etc/supervisor/supervisord.conf
 
 # Configure monitord
+"checking for monitord"
 if [ -d /home/pi/monitord ];
     then
         echo "monitord is installed, leaving it alone."
     else
+        echo "insalling monitord."
+        if [ ! -d /home/pi/logs ]; then
+            mkdir /home/pi/logs
+        fi
         # TODO create virtualenv
         pip install tabulate
         pip install python-dotenv
