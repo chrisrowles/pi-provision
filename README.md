@@ -56,9 +56,12 @@ You can also a web client for the monitoring api [here](https://github.com/chris
     - `CHANNEL_ID`: Your main channel id.
     - `BACKUP_CHANNEL_ID`: Channel id for backup cron job notifications (this can be the same as your main channel id if you like).
     - `BACKUP_WEBHOOK`: Whichever channel you decide to use for backup cron job notifications, you'll need to make sure you create a webhook that the backup script can call during its stages, assign the webhook url to this variable.
-9. Copy `.env` to `/home/pi/.env`
-10. ???
-11. Profit :D
+8. Link `.env` to `/etc/backup/`
+    ```sh
+    ln -s /home/pi/pi-monitord/.env /etc/backup/
+    ```
+9. ???
+10. Profit :D
 
 ## How it Works
 
