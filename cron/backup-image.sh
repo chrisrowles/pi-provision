@@ -92,7 +92,7 @@ if [ $RESULT = 0 ];
         echo "Backup process failed."
 fi
 
-discordnotification --webhook-url="$BACKUP_WEBHOOK" --text "**[image]** backup process has finished ${STATUS}, restarting services."
+discordnotification --webhook-url="$BACKUP_WEBHOOK" --text "**[image]** backup process has finished, restarting services."
 
 # Restart stopped services.
 echo "Starting the stopped services again."
