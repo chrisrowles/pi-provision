@@ -165,6 +165,9 @@ then
     echo "error creating virtual host."
 else
     echo "success, virtual host created."
+    cat << EOF >> /etc/hosts
+127.0.0.1   api.raspberrypi.local
+EOF
     ln -s $AVAILABLECONF $ENABLEDCONF
     systemctl restart apache2
 fi
@@ -205,12 +208,13 @@ if [ -d /home/pi/monitord ];
     else
         echo "insalling monitord."
         if [ ! -d /home/pi/logs ]; then
-            mkdir /home/pi/logs
+            sudo -u pi mkdir /home/pi/logs
         fi
         # TODO create virtualenv
         pip install tabulate
         pip install python-dotenv
         sudo -u pi git clone https://github.com/chrisrowles/pi-monitord.git /home/pi/pi-monitord
+        sudo -u pi cp /home/pi/pi-monitord/.env.example .env
         ln -s /home/pi/pi-monitord/supervisor/bot.supervisor /etc/supervisor/conf.d/
         sudo -u pi supervisord
         sudo -u pi supervisorctl status
