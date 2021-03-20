@@ -214,7 +214,8 @@ if [ -d /home/pi/monitord ];
         pip install tabulate
         pip install python-dotenv
         sudo -u pi git clone https://github.com/chrisrowles/pi-monitord.git /home/pi/pi-monitord
-        sudo -u pi cp /home/pi/pi-monitord/.env.example .env
+        sudo -u pi cp /home/pi/pi-monitord/.env.example /home/pi/pi-monitord/.env
+        sudo -u pi cp /home/pi/pi-monitord/.env /home/pi/.env
         ln -s /home/pi/pi-monitord/supervisor/bot.supervisor /etc/supervisor/conf.d/
         sudo -u pi supervisord
         sudo -u pi supervisorctl status
