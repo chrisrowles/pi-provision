@@ -24,7 +24,7 @@ if [[ $PYTHONDEFAULT == "3" ]]
     else
         # TODO check update-alternatives --list first
         echo "configuring python 3 as default"
-        update-alternatives --install  /usr/bin/python python /usr/bin/python3 1
+        update-alternatives --install /usr/bin/python python /usr/bin/python3 1
         update-alternatives --set python /usr/bin/python3
 fi
 
@@ -139,6 +139,7 @@ cd /var/www/flaskapps/pi-monitor-api
 pip install testresources
 pip install -r requirements.txt
 cd $WD
+chown -R pi:www-data /var/www/flaskapps
 echo "configuring virtual host"
 AVAILABLECONF=/etc/apache2/sites-available/api.raspberrypi.local.conf
 ENABLEDCONF=/etc/apache2/sites-enabled/api.raspberrypi.local.conf
@@ -197,7 +198,7 @@ chown -R pi:pi /var/log/supervisor
 cp $(pwd)/etc/supervisord/supervisord.conf /etc/supervisor/supervisord.conf
 
 # Configure monitord
-"checking for monitord"
+echo "checking for monitord"
 if [ -d /home/pi/monitord ];
     then
         echo "monitord is installed, leaving it alone."
