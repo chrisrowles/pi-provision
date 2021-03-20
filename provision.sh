@@ -84,7 +84,7 @@ if [ -f /usr/bin/virtualhost ];
         chmod u+x /usr/bin/virtualhost
 fi
 echo "adding pi to www-data group and changing ownership of /var/www"
-usermod -aG pi:www-data
+usermod -aG www-data pi
 chown -R pi:www-data /var/www
 
 
