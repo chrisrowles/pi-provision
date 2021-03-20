@@ -3,7 +3,10 @@
 # Authors: Chris Rowles
 # Incremental backup using rsync and discord webhooks.
 
+echo "Starting incremental backup process"
+
 # Load environment variables
+echo "Loading ennvironment variables"
 if [ -f "/home/pi/.env" ]; then
     export $(cat "/home/pi/.env" | grep -v '#' | awk '/=/ {print $1}')
 fi

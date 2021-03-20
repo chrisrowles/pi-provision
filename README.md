@@ -2,7 +2,8 @@
 
 ## Introduction
 
-This repository provides automatic installation and configuration of the following software:
+This repository provides automatic installation and configuration of the following software in order to provision a new Raspberry Pi OS/Raspbian install with system monitoring, backup jobs, and discord bot integration:
+
 
 - Python3
 - Pip3
@@ -10,21 +11,16 @@ This repository provides automatic installation and configuration of the followi
 - Git
 - Fail2Ban
 - Supervisor
-
-And following packages:
-
 - [discord.py](https://pypi.org/project/discord.py/): A python wrapper for discord, built by [rapptz](https://pypi.org/user/rapptz/).
 - [discord.sh](https://github.com/ChaoticWeg/discord.sh): A cli utility for discord webhooks, built by [ChaoticWeg](https://github.com/ChaoticWeg).
 - [pi-monitor-api](https://github.com/chrisrowles/pi-monitor-api): A system-monitoring api built by [yours truly](https://github.com/chrisrowles).
 - [pi-monitord](https://github.com/chrisrowles/pi-monitord): Discord integration for the api (also built by [yours truly](https://github.com/chrisrowles)).
 
-In order to provision a brand new Raspberry Pi OS/Raspbian install with a system monitoring suite, complete with discord bot integration.
-
 Check out the monitoring api [here](https://github.com/chrisrowles/pi-monitor-api).
 
 Check out the discord integration [here](https://github.com/chrisrowles/pi-monitord).
 
-You can also a web client for the monitoring api [here](https://github.com/chrisrowles/pi-monitor). It is not included in this provisioning tool, however please feel free to use and modify it as much as you like!
+You can also a get a web client for the monitoring api [here](https://github.com/chrisrowles/pi-monitor). It is not included in this provisioning tool, however please feel free to use and modify it as much as you like!
 
 ## Installation
 
@@ -89,3 +85,12 @@ You can also a web client for the monitoring api [here](https://github.com/chris
 16. [pi-monitord](https://github.com/chrisrowles/pi-monitord) is installed to `/home/pi/pi-monitord`.
 17. `/home/pi/pi-monitord/supervisor/bot.supervisor` is linked to `/etc/supervisor/conf.d/`.
 18. supervisor is restarted, provisioning is complete!
+
+
+# Todo
+
+- Allow users to set required environment variables as part the install process rather than just informing them that they need to add them after the install has completed.
+
+- Give users a choice where to install `pi-monitord`, by default it's installed to the `pi` user's home directory - `/home/pi/pi-monitord`, in addition to updates to the provisioning script this will also require updates to `pi-monitord`'s `bot.supervisor`, to reference the correct package location.
+
+- Make it more customisable (decide what to offer, what to include by default etc).
