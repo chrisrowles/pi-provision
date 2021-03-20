@@ -27,28 +27,38 @@ You can also a web client for the monitoring api [here](https://github.com/chris
 ## Installation
 
 1. Download the repository to your pi, or clone it if you already have git installed.
+
     ```sh
     git clone https://github.com/chrisrowles/pi-provision.git
     ```
 2. Change your current working directory to the repository.
+
     ```sh
     cd pi-provision
     ```
 3. Run the provisioning script with sudo.
+
     ```sh
     sudo bash provision.sh
     ```
 4. Go and make a cup of tea, coffee or hot chocolate, whichever you prefer
 5. In about ten minutes or so, the script will complete and your monitoring api will be online
 6. Change directory to `/home/pi/pi-monitord` and copy `.env.example` to `.env`
+
     ```sh
     cd /home/pi/pi-monitord
     cp .env.example .env
     ```
-7. Populate your environment variables for your discord bot and channel webhook URLs
-8. Copy `.env` to `/home/pi/.env`
-9. ???
-10. Profit :D
+7. Populate your environment variables:
+    - `SYSAPI_URL`: this is the url of the monitoring api which by default is `api.raspberrypi.local`, this is used by bot commands to make requests to the monitoring api.
+    - `DISCORD_TOKEN`: your bot token. Create a new app at https://discord.com/developers/applications
+    - `USER_ID`: Your discord user id, in the format `<@YOUR-ID-HERE>`.
+    - `CHANNEL_ID`: Your main channel id.
+    - `BACKUP_CHANNEL_ID`: Channel id for backup cron job notifications (this can be the same as your main channel id if you like).
+    - `BACKUP_WEBHOOK`: Whichever channel you decide to use for backup cron job notifications, you'll need to make sure you create a webhook that the backup script can call during its stages, assign the webhook url to this variable.
+9. Copy `.env` to `/home/pi/.env`
+10. ???
+11. Profit :D
 
 ## How it Works
 
