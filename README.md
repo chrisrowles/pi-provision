@@ -41,7 +41,7 @@ You can also a get a web client for the monitoring api [here](https://github.com
     ```
 4. At some point, the script will ask you to set the following environment variables:
     - `DISCORD_TOKEN`: your bot token. Create a new app at https://discord.com/developers/applications
-    - `USER_ID`: Your discord user id, in the format `<@YOUR-ID-HERE>`.
+    - `USER_ID`: Your discord user id.
     - `CHANNEL_ID`: Your main channel id.
     - `BACKUP_WEBHOOK`: Whichever channel you decide to use for backup cron job notifications, you'll need to make sure you create a webhook that the backup script can call during its stages, assign the webhook url to this variable.
 
