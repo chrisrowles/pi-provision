@@ -179,7 +179,7 @@ read -p "Please enter your discord app token: " DISCORDBOTTOKEN
 read -p "Please enter your discord channel id for system monitoring notifications: " DISCORDCHANNELID
 read -p "Please enter your discord channel webhook url for backup job notifications: "  DISCORDBACKUPWEBHOOK
 
-cat << EOF > /home/pi/.env
+cat << EOF > /etc/backup/.env
 SYSAPI_URL=http://api.raspberrypi.local/
 DISCORD_TOKEN=$DISCORDBOTTOKEN
 USER_ID=<@$DISCORDUSERID>
@@ -230,7 +230,8 @@ if [ -d /home/pi/monitord ];
         pip install python-dotenv
         sudo -u pi git clone https://github.com/chrisrowles/pi-monitord.git /home/pi/pi-monitord
         # Use the .env created earlier as part of provisioning instead of the repo's example  
-        sudo -u pi cp /home/pi/.env /home/pi/pi-monitord/.env
+        cp /etc/backup/.env /home/pi/pi-monitord/.env
+        chown pi:pi /home/pi/pi-monitord/.env
         sudo -u pi supervisord
         sudo -u pi supervisorctl status
 fi
