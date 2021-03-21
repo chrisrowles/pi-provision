@@ -146,8 +146,8 @@ pip install -r requirements.txt
 cd $wd
 chown -R pi:www-data /var/www/flaskapps
 
-read -p "Please enter chosen domain for the api (defaults to http://api.raspberrypi.local): " domain
-servername=${domain:="http://api.raspberrypi.local"}
+read -p "Please enter chosen domain for the api (defaults to api.raspberrypi.local): " domain
+servername=${domain:="api.raspberrypi.local"}
 
 # configure pi-monitor-api virtualhost
 echo "configuring virtual host"
@@ -201,7 +201,7 @@ read -p "Please enter your discord channel id for system monitoring notification
 read -p "Please enter your discord channel webhook url for backup job notifications: "  discord_webhook
 
 cat << EOF > /etc/backup/.env
-SYSAPI_URL=$servername/
+SYSAPI_URL=http://$servername/
 DISCORD_TOKEN=$discord_app_token
 USER_ID=<@$discord_user_id>
 CHANNEL_ID=$discord_channel_id
@@ -250,6 +250,6 @@ fi
 
 echo "Provisioning is complete."
 echo "------------------------------------------"
-echo "$servername"
+echo "http://$servername"
 
 exit 0
