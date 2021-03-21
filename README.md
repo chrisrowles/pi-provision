@@ -50,7 +50,7 @@ You can also a get a web client for the monitoring api [here](https://github.com
 
 # Todo
 
-- Allow users to set required environment variables as part the install process rather than just informing them that they need to add them after the install has completed.
+- ~~Allow users to set required environment variables as part the install process rather than just informing them that they need to add them after the install has completed.~~ - **implemented 20.03.2021**
 
 - Give users a choice where to install `pi-monitord`, by default it's installed to the `pi` user's home directory - `/home/pi/pi-monitord`, in addition to updates to the provisioning script this will also require updates to `pi-monitord`'s `bot.supervisor`, to reference the correct package location.
 
