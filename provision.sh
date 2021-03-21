@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-if [ "$(whoami)" != "root" ]; then
+[[ "$(whoami)" != 'root' ]] &&
+{
     echo "this script must be run as root."
-    exit 1
-fi
+    exit 1;
+}
 
-# set current working directory
 wd=$(pwd)
 
 echo "making sure system is up-to-date"
@@ -15,7 +15,7 @@ apt-get -y upgrade
 # configure python3 (assumes it is installed... usually is on latest version of raspbian OS)
 echo "checking for python 3"
 python_default=`python -V | awk -F ' ' '{print $2}' | awk -F '.' '{print $1}'`;
-if [ $python_default == "3" ]
+if [[ $python_default == "3" ]]
     then
         echo "python 3 is set as default"
     else
@@ -28,7 +28,7 @@ fi
 # configure pip3
 echo "checking for pip3"
 pip_install=`dpkg -s python3-pip | grep Status`;
-if [ $pip_install == S* ]
+if [[ $pip_install == S* ]]
     then
         echo "pip3 is installed"
     else
@@ -45,7 +45,7 @@ pip install discord.py
 
 # install discord.sh
 echo "checking for discord.sh"
-if [ -f /usr/bin/discordnotification ]
+if [ -f /usr/bin/discordnotification ];
     then
         echo "discord.sh is installed"
     else
@@ -57,7 +57,7 @@ fi
 # install apache
 echo "checking for apache"
 apache_install=`dpkg -s apache2 | grep Status`;
-if [ $apache_install == S* ]
+if [[ $apache_install == S* ]]
     then
         echo "apache is installed"
     else
@@ -79,7 +79,7 @@ a2enmod headers
 a2enmod rewrite
 
 # install virtualhost helper script
-if [ -f /usr/bin/virtualhost ]
+if [ -f /usr/bin/virtualhost ];
     then
         echo "virtualhost helper script is installed"
     else
@@ -96,7 +96,7 @@ chown -R pi:www-data /var/www
 # install fail2ban
 echo "checking for fail2ban"
 fail2ban_install=`dpkg -s fail2ban | grep Status`;
-if [ $fail2ban_install == S* ]
+if [[ $fail2ban_install == S* ]]
     then
         echo "fail2ban is installed."
     else
@@ -119,7 +119,7 @@ systemctl enable fail2ban
 # install git
 echo "checking for git"
 git_install=`dpkg -s git | grep Status`;
-if [ $git_install == S* ]
+if [[ $git_install == S* ]]
     then
         echo "git is installed"
     else
@@ -129,7 +129,7 @@ fi
 
 # install pi-monitor-api
 echo "cloning pi-monitor-api"
-if [ ! -d /var/www/flaskapps ]
+if [ ! -d /var/www/flaskapps ];
     then
         mkdir /var/www/flaskapps
     else
@@ -150,25 +150,22 @@ chown -R pi:www-data /var/www/flaskapps
 echo "configuring virtual host"
 available_conf=/etc/apache2/sites-available/api.raspberrypi.local.conf
 enabled_conf=/etc/apache2/sites-enabled/api.raspberrypi.local.conf
-
-read -p "Please enter domain name for the system monitoring api (defaults to http://api.raspberrypi.local) :" domain
-servername=${domain:="http://api.raspberrypi.local"}
 if [ -f $available_conf ]; then
-    rm -rf "$enabled_conf"
-    rm -rf "$available_conf"
+    rm -rf $enabled_conf
+    rm -rf $available_conf
 fi
 if ! cat << EOF > $AVAILABLECONF
 <VirtualHost *:80>
-    ServerName $servername
-    ServerAlias www.$servername
+    ServerName api.raspberrypi.local
+    ServerAlias www.api.raspberrypi.local
     WSGIScriptAlias / /var/www/flaskapps/pi-monitor-api/api.wsgi
     <Directory /var/www/flaskapps/pi-monitor-api/app>
         Options FollowSymLinks MultiViews
         AllowOverride all
         Require all granted
     </Directory>
-    ErrorLog /var/log/apache2/$servername-error.log
-    CustomLog /var/log/apache2/$servername-access.log combined
+    ErrorLog /var/log/apache2/api.raspberrypi.local-error.log
+    CustomLog /var/log/apache2/api.raspberrypi.local-access.log combined
 </VirtualHost>
 EOF
 then
@@ -176,9 +173,9 @@ then
 else
     echo "success, virtual host created."
     cat << EOF >> /etc/hosts
-127.0.0.1   $servername
+127.0.0.1   api.raspberrypi.local
 EOF
-    ln -s "$available_conf" "$enabled_conf"
+    ln -s $available_conf $enabled_conf
     systemctl restart apache2
 fi
 
@@ -200,9 +197,7 @@ read -p "Please enter your discord app token: " discord_app_token
 read -p "Please enter your discord channel id for system monitoring notifications: " discord_channel_id
 read -p "Please enter your discord channel webhook url for backup job notifications: "  discord_webhook
 
-monitord_env=/etc/backup/.env
-
-cat << EOF > $monitord_env
+cat << EOF > /etc/backup/.env
 SYSAPI_URL=http://api.raspberrypi.local/
 DISCORD_TOKEN=$discord_app_token
 USER_ID=<@$discord_user_id>
@@ -214,7 +209,7 @@ EOF
 # install supervisord
 echo "checking for supervisor"
 supervisor_install=`dpkg -s supervisor | grep Status`;
-if [ $supervisor_install == S* ]
+if [[ $supervisor_install == S* ]]
     then
         echo "supervisor is installed."
     else
@@ -229,7 +224,7 @@ cp $(pwd)/etc/supervisord/supervisord.conf /etc/supervisor/supervisord.conf
 
 # Configure pi-monitord
 echo "checking for pi-monitord"
-if [ -d /home/pi/monitord ]
+if [ -d /home/pi/monitord ];
     then
         echo "pi-monitord is installed, leaving it alone."
     else
@@ -241,8 +236,8 @@ if [ -d /home/pi/monitord ]
         pip install tabulate
         pip install python-dotenv
         sudo -u pi git clone https://github.com/chrisrowles/pi-monitord.git /home/pi/pi-monitord
-        if [ -f "$monitord_env" ]; then
-            cp "$monitord_env" /home/pi/pi-monitord/.env
+        if [ -f /etc/backup/.env ]; then
+            cp /etc/backup/.env /home/pi/pi-monitord/.env
             chown pi:pi /home/pi/pi-monitord/.env
         fi
         ln -s /home/pi/pi-monitord/supervisor/bot.supervisor /etc/supervisor/conf.d/
@@ -252,6 +247,6 @@ fi
 
 echo "Provisioning is complete."
 echo "------------------------------------------"
-echo "$servername"
+echo "http://api.raspberrypi.local"
 
 exit 0
