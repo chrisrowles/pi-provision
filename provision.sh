@@ -157,7 +157,7 @@ if [ -f $available_conf ]; then
     rm -rf $enabled_conf
     rm -rf $available_conf
 fi
-if ! cat << EOF > $AVAILABLECONF
+if ! cat << EOF > $available_conf
 <VirtualHost *:80>
     ServerName $servername
     ServerAlias www.$servername
