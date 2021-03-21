@@ -6,16 +6,14 @@
     exit 1;
 }
 
-
 WD=$(pwd)
-
 
 echo "making sure system is up-to-date"
 apt-get -y update
 apt-get -y upgrade
 
 
-# configure python3 (assumes it is installed... usually is on later versions of raspbian OS)
+# configure python3 (assumes it is installed... usually is on latest version of raspbian OS)
 echo "checking for python 3"
 PYTHONDEFAULT=`python -V | awk -F ' ' '{print $2}' | awk -F '.' '{print $1}'`;
 if [[ $PYTHONDEFAULT == "3" ]]
