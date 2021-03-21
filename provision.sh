@@ -172,6 +172,21 @@ EOF
     systemctl restart apache2
 fi
 
+echo "Please configure your discord settings."
+# Configure environment variables
+read -p "Please enter your discord user id: "  DISCORDUSERID
+read -p "Please enter your discord app token: " DISCORDBOTTOKEN
+read -p "Please enter your discord channel id for system monitoring notifications: " DISCORDCHANNELID
+read -p "Please enter your discord channel webhook url for backup job notifications: "  DISCORDBACKUPWEBHOOK
+
+cat << EOF > /home/pi/.env
+SYSAPI_URL=http://api.raspberrypi.local/
+DISCORD_TOKEN=$DISCORDBOTTOKEN
+USER_ID=<@$DISCORDUSERID>
+CHANNEL_ID=$DISCORDCHANNELID
+
+BACKUP_WEBHOOK=$DISCORDBACKUPWEBHOOK
+EOF
 
 # Copy backup scripts (assumes hdd is connected and mounted in correct location)
 echo "Configuring backups"
@@ -214,9 +229,8 @@ if [ -d /home/pi/monitord ];
         pip install tabulate
         pip install python-dotenv
         sudo -u pi git clone https://github.com/chrisrowles/pi-monitord.git /home/pi/pi-monitord
-        sudo -u pi cp /home/pi/pi-monitord/.env.example /home/pi/pi-monitord/.env
-        sudo -u pi ln -s /home/pi/pi-monitord/.env /home/pi/.env
-        ln -s /home/pi/pi-monitord/supervisor/bot.supervisor /etc/supervisor/conf.d/
+        # Use the .env created earlier as part of provisioning instead of the repo's example  
+        sudo -u pi cp /home/pi/.env /home/pi/pi-monitord/.env
         sudo -u pi supervisord
         sudo -u pi supervisorctl status
 fi
