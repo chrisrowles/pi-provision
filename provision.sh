@@ -215,12 +215,14 @@ if [ -d /home/pi/monitord ];
         pip install python-dotenv
         sudo -u pi git clone https://github.com/chrisrowles/pi-monitord.git /home/pi/pi-monitord
         sudo -u pi cp /home/pi/pi-monitord/.env.example /home/pi/pi-monitord/.env
-        sudo -u pi cp /home/pi/pi-monitord/.env /home/pi/.env
+        sudo -u pi ln -s /home/pi/pi-monitord/.env /home/pi/.env
         ln -s /home/pi/pi-monitord/supervisor/bot.supervisor /etc/supervisor/conf.d/
         sudo -u pi supervisord
         sudo -u pi supervisorctl status
 fi
 
-echo "Provisioning complete. Don't forget to add discord environment variables to /home/pi/.env"
+echo "Provisioning complete. Don't forget to populate environment variables for discord in /home/pi/.env"
+echo "------------------------------------------"
+echo "http://api.raspberrypi.local"
 
 exit 0

@@ -26,7 +26,7 @@ fi
 discordnotification --webhook-url="$BACKUP_WEBHOOK" --text "**[incremental]** backup to \`$DIR\` started.\nRunning rsync in archive mode and preserving hard links."
 
 echo "Starting incremental backup, this may take some time."
-rsync -aH --delete --exclude-from=/home/pi/backup-incremental-exclusions.txt / $DIR
+rsync -aH --delete --exclude-from=/etc/backup/backup-incremental-exclusions.txt / $DIR
 
 # notify discord channel
 discordnotification --webhook-url="$BACKUP_WEBHOOK" --text "**[incremental]** backup has completed successfully.\nNext backup will be performed tomorrow at 09:00AM."
