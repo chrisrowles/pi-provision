@@ -146,26 +146,29 @@ pip install -r requirements.txt
 cd $wd
 chown -R pi:www-data /var/www/flaskapps
 
+read -p "Please enter chosen domain for the api (defaults to http://api.raspberrypi.local): " domain
+servername=${domain:="http://api.raspberrypi.local"}
+
 # configure pi-monitor-api virtualhost
 echo "configuring virtual host"
-available_conf=/etc/apache2/sites-available/api.raspberrypi.local.conf
-enabled_conf=/etc/apache2/sites-enabled/api.raspberrypi.local.conf
+available_conf=/etc/apache2/sites-available/$servername.conf
+enabled_conf=/etc/apache2/sites-enabled/$servername.conf
 if [ -f $available_conf ]; then
     rm -rf $enabled_conf
     rm -rf $available_conf
 fi
 if ! cat << EOF > $AVAILABLECONF
 <VirtualHost *:80>
-    ServerName api.raspberrypi.local
-    ServerAlias www.api.raspberrypi.local
+    ServerName $servername
+    ServerAlias www.$servername
     WSGIScriptAlias / /var/www/flaskapps/pi-monitor-api/api.wsgi
     <Directory /var/www/flaskapps/pi-monitor-api/app>
         Options FollowSymLinks MultiViews
         AllowOverride all
         Require all granted
     </Directory>
-    ErrorLog /var/log/apache2/api.raspberrypi.local-error.log
-    CustomLog /var/log/apache2/api.raspberrypi.local-access.log combined
+    ErrorLog /var/log/apache2/$servername-error.log
+    CustomLog /var/log/apache2/$servername-access.log combined
 </VirtualHost>
 EOF
 then
@@ -173,7 +176,7 @@ then
 else
     echo "success, virtual host created."
     cat << EOF >> /etc/hosts
-127.0.0.1   api.raspberrypi.local
+127.0.0.1   $servername
 EOF
     ln -s $available_conf $enabled_conf
     systemctl restart apache2
@@ -198,7 +201,7 @@ read -p "Please enter your discord channel id for system monitoring notification
 read -p "Please enter your discord channel webhook url for backup job notifications: "  discord_webhook
 
 cat << EOF > /etc/backup/.env
-SYSAPI_URL=http://api.raspberrypi.local/
+SYSAPI_URL=$servername/
 DISCORD_TOKEN=$discord_app_token
 USER_ID=<@$discord_user_id>
 CHANNEL_ID=$discord_channel_id
@@ -247,6 +250,6 @@ fi
 
 echo "Provisioning is complete."
 echo "------------------------------------------"
-echo "http://api.raspberrypi.local"
+echo "$servername"
 
 exit 0
