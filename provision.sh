@@ -170,6 +170,18 @@ EOF
     systemctl restart apache2
 fi
 
+# Copy backup scripts (assumes hdd is connected and mounted in correct location)
+echo "Configuring backups"
+if [ ! -d /etc/backup ]; then
+    echo "creating backup config directory"
+    mkdir /etc/backup
+fi
+echo "copying backup cron jobs"
+cp $(pwd)/cron/backup-incremental-exclusions.txt /etc/backup/
+cp $(pwd)/cron/backup-incremental /etc/cron.daily/
+cp $(pwd)/cron/backup-image /etc/cron.monthly/
+
+
 echo "Please configure your discord settings."
 # Configure environment variables
 read -p "Please enter your discord user id: "  DISCORDUSERID
@@ -185,17 +197,6 @@ CHANNEL_ID=$DISCORDCHANNELID
 
 BACKUP_WEBHOOK=$DISCORDBACKUPWEBHOOK
 EOF
-
-# Copy backup scripts (assumes hdd is connected and mounted in correct location)
-echo "Configuring backups"
-if [ ! -d /etc/backup ]; then
-    echo "creating backup config directory"
-    mkdir /etc/backup
-fi
-echo "copying backup cron jobs"
-cp $(pwd)/cron/backup-incremental-exclusions.txt /etc/backup/
-cp $(pwd)/cron/backup-incremental /etc/cron.daily/
-cp $(pwd)/cron/backup-image /etc/cron.monthly/
 
 
 # Make sure supervisor is installed
@@ -227,14 +228,15 @@ if [ -d /home/pi/monitord ];
         pip install tabulate
         pip install python-dotenv
         sudo -u pi git clone https://github.com/chrisrowles/pi-monitord.git /home/pi/pi-monitord
-        # Use the .env created earlier as part of provisioning instead of the repo's example  
-        cp /etc/backup/.env /home/pi/pi-monitord/.env
-        chown pi:pi /home/pi/pi-monitord/.env
+        if [ -f /etc/backup/.env]; then
+            cp /etc/backup/.env /home/pi/pi-monitord/.env
+            chown pi:pi /home/pi/pi-monitord/.env
+        fi
         sudo -u pi supervisord
         sudo -u pi supervisorctl status
 fi
 
-echo "Provisioning complete. Don't forget to populate environment variables for discord in /home/pi/.env"
+echo "Provisioning is complete."
 echo "------------------------------------------"
 echo "http://api.raspberrypi.local"
 
