@@ -194,8 +194,8 @@ if [ ! -d /etc/backup ]; then
 fi
 echo "copying backup cron jobs"
 cp $(pwd)/cron/backup-incremental-exclusions.txt /etc/backup/
-cp $(pwd)/cron/backup-incremental.sh /etc/cron.daily/
-cp $(pwd)/cron/backup-image.sh /etc/cron.monthly/
+cp $(pwd)/cron/backup-incremental /etc/cron.daily/
+cp $(pwd)/cron/backup-image /etc/cron.monthly/
 
 
 # Make sure supervisor is installed
