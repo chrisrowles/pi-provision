@@ -34,12 +34,12 @@ You can also a get a web client for the monitoring api [here](https://github.com
     ```sh
     cd pi-provision
     ```
-3. Run the provisioning script with sudo.
+3. Run the install script with sudo.
 
     ```sh
-    sudo bash provision.sh
+    sudo bash install.sh
     ```
-4. At some point, the script will ask you to set the following environment variables:
+4. The script will ask you to set the following environment variables:
     - `DISCORD_TOKEN`: your bot token. Create a new app at https://discord.com/developers/applications
     - `USER_ID`: Your discord user id.
     - `CHANNEL_ID`: Your main channel id.
