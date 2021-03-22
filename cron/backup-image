@@ -5,8 +5,8 @@
 # Slightly mofified to read env variables and add webhook trigger for discord notifications.
 
 # Load Environment Variables
-if [ -f "/home/pi/.env" ]; then
-    export $(cat "/home/pi/.env" | grep -v '#' | awk '/=/ {print $1}')
+if [ -f "/etc/backup/.env" ]; then
+    export $(cat "/etc/backup/.env" | grep -v '#' | awk '/=/ {print $1}')
 fi
 
 # Setting up directories
