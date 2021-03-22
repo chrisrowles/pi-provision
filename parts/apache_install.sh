@@ -14,15 +14,15 @@ fi
 # install mod_wsgi
 apt-get -y install libapache2-mod-wsgi-py3
 
-# start apache at boot
-echo "making sure apache is started and configured to run at boot"
-systemctl start apache2
-systemctl enable apache2
-
 # enable modules
 echo "enabling mod headers and mod rewrite"
 a2enmod headers
 a2enmod rewrite
+
+# start apache at boot
+echo "making sure apache is started and configured to run at boot"
+systemctl restart apache2
+systemctl enable apache2
 
 # install virtualhost helper script
 if [ -f /usr/bin/virtualhost ];

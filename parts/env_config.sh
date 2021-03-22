@@ -11,11 +11,16 @@ read -p "Please enter your discord app token: " discord_app_token
 read -p "Please enter your discord channel id for system monitoring notifications: " discord_channel_id
 read -p "Please enter your discord channel webhook url for backup job notifications: "  discord_webhook
 
-# cat << EOF > /etc/backup/.env
-# SYSAPI_URL=http://$servername/
-# DISCORD_TOKEN=$discord_app_token
-# USER_ID=<@$discord_user_id>
-# CHANNEL_ID=$discord_channel_id
+if [ ! -d /etc/backup ]; then
+    echo "creating backup config directory"
+    mkdir /etc/backup
+fi
 
-# BACKUP_WEBHOOK=$discord_webhook
-# EOF
+cat << EOF > /etc/backup/.env
+SYSAPI_URL=http://$servername/
+DISCORD_TOKEN=$discord_app_token
+USER_ID=<@$discord_user_id>
+CHANNEL_ID=$discord_channel_id
+
+BACKUP_WEBHOOK=$discord_webhook
+EOF

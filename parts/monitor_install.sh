@@ -66,6 +66,7 @@ if [ -d /home/pi/monitord ];
         pip install tabulate
         pip install python-dotenv
         sudo -u pi git clone https://github.com/chrisrowles/pi-monitord.git /home/pi/pi-monitord
+        echo "copying .env to pi-monitord directory"
         if [ -f /etc/backup/.env ]; then
             cp /etc/backup/.env /home/pi/pi-monitord/.env
             chown pi:pi /home/pi/pi-monitord/.env
